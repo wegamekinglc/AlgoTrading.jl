@@ -7,6 +7,3 @@ struct Transaction
     amount::Real
     fillprice::Real
 end
-
-
-type 
