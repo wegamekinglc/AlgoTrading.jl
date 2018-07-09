@@ -4,16 +4,16 @@ import Base.==
 
 abstract type Order end
 
-
 struct MarketOrder <: Order
     id::Int
+    symbol::string
     amount::Real
     direction::Int
 end
 
-
 struct LimitOrder <: Order
     id::Int
+    symbol::string
     amount::Real
     direction::Int
     limitprice::Real
