@@ -3,7 +3,7 @@ using Base.DateTime
 
 include("../src/mktdatas.jl")
 
-@testset "bar data structure test" begin
+@testset "Bar data structure test" begin
     bar = Bar(DateTime(2018, 7, 9, 14, 0, 0), 18., 20., 12.5, 15.0, 400.)
     @test bar.timestamp == DateTime(2018, 7, 9, 14, 0, 0)
     @test bar.open ≡ 18.

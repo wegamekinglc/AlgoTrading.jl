@@ -1,19 +1,20 @@
 export MarketOrder, LimitOrder
 
 import Base.==
+import Base.Random.UUID
 
 abstract type Order end
 
 struct MarketOrder <: Order
-    id::Int
-    symbol::string
+    id::UUID
+    symbol::String
     amount::Real
     direction::Int
 end
 
 struct LimitOrder <: Order
-    id::Int
-    symbol::string
+    id::UUID
+    symbol::String
     amount::Real
     direction::Int
     limitprice::Real

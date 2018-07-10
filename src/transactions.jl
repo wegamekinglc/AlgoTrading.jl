@@ -1,16 +1,18 @@
 export Transaction
 
+import Base.Random.UUID
+
 include("orders.jl")
 
 struct Transaction
-    id::Int
-    orderid::Int
+    id::UUID
+    orderid::UUID
     amount::Real
     fillprice::Real
 end
 
 mutable struct OrdersStatus
-    orderid::Int
+    orderid::UUID
     fillamount::Real
     isfinished::Bool
     iscanceled::Bool
