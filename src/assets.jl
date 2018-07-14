@@ -34,10 +34,14 @@ struct FXPair
     end
 end
 
+invpair(fxp::FXPair) = FXPair(fxp.domestic, fxp.foreign)
+
 struct FXQuote
     pair::FXPair
     value::Float64
 end
+
+fxpair(fxquote::FXQuote) = fxquote.pair
 
 +(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value + rhs.value) : error("Currency is not compatiable")
 -(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value - rhs.value) : error("Currency is not compatiable")
@@ -70,6 +74,24 @@ end
 
 *(lhs::FXQuote, rhs::Cash) = lhs.pair.foreign == rhs.currency ? Cash(lhs.pair.domestic, lhs.value * rhs.value) : error("Currency is not compatiable")
 *(lhs::Cash, rhs::FXQuote) = lhs.currency == rhs.pair.foreign ? Cash(rhs.pair.domestic, lhs.value * rhs.value) : error("Currency is not compatiable")
+
+struct FXForward
+    pair::FXPair
+    maturity::Base.DateTime
+end
+
+invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
+
+struct FXForwadQuote
+    forward::FXForward
+    value::Float64
+end
+
+maturity(fxfquote::FXForwadQuote) = fxfquote.forward.maturity
+fxpair(fxfquote::FXForwadQuote) = fxfquote.forward.pair
+
+/(lhs::FXForwadQuote, rhs::Float64) = FXQuote(lhs.contract, lhs.value / rhs)
+/(lhs::Float64, rhs::FXForwadQuote) = FXQuote(invforward(rhs.forward), lhs / rhs.value)
 
 # Frequently used currencies and pairs
 USD = Currency("USD")

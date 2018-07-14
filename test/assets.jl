@@ -53,6 +53,11 @@ end
     @test pair2.symbol == pair.symbol
     @test pair2.foreign == pair.foreign
     @test pair2.domestic == pair.domestic
+
+    pair3 = invpair(pair)
+    @test pair3.symbol == "JPY|USD"
+    @test pair3.foreign == pair.domestic
+    @test pair3.domestic == pair.foreign
 end
 
 @testset "FX quote test" begin
@@ -60,6 +65,7 @@ end
     fxquote = FXQuote(pair, 106.)
     @test fxquote.pair == pair
     @test fxquote.value == 106.
+    @test fxpair(fxquote) == pair
 end
 
 @testset "FX quote arithmetic test" begin
