@@ -3,9 +3,9 @@ export Bar
 struct Bar
     timestamp::Base.DateTime
     symbol::String
-    open::Real
-    high::Real
-    low::Real
-    close::Real
-    volume::Real
+    open::Float64
+    high::Float64
+    low::Float64
+    close::Float64
+    volume::Float64
 end

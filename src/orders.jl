@@ -8,16 +8,16 @@ abstract type Order end
 struct MarketOrder <: Order
     id::UUID
     symbol::String
-    amount::Real
+    amount::Float64
     direction::Int
 end
 
 struct LimitOrder <: Order
     id::UUID
     symbol::String
-    amount::Real
+    amount::Float64
     direction::Int
-    limitprice::Real
+    limitprice::Float64
 end
 
 function ==(x::MarketOrder, y::MarketOrder)

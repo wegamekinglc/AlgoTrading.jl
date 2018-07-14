@@ -7,13 +7,13 @@ include("orders.jl")
 struct Transaction
     id::UUID
     orderid::UUID
-    amount::Real
-    fillprice::Real
+    amount::Float64
+    fillprice::Float64
 end
 
 mutable struct OrdersStatus
     orderid::UUID
-    fillamount::Real
+    fillamount::Float64
     isfinished::Bool
     iscanceled::Bool
 end
