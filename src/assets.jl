@@ -1,11 +1,12 @@
 import Base.+
+import Base.-
 
 struct Currency
     symbol::String
 end
 
 struct Cash
-    curreny::Currency
+    currency::Currency
     value::Real
 end
 
@@ -27,7 +28,7 @@ struct FXQuote
 end
 
 function +(lhs::Cash, rhs::Cash)
-    if lhs.curreny == rhs::currency
+    if lhs.currency == rhs.currency
         Cash(lhs.currency, lhs.value + rhs.value)
     else
         error("Currency is not compatiable")
@@ -35,8 +36,8 @@ function +(lhs::Cash, rhs::Cash)
 end
 
 function -(lhs::Cash, rhs::Cash)
-    if lhs.curreny == rhs::currency
-        Cash(lhs.currency, lhs.value + rhs.value)
+    if lhs.currency == rhs.currency
+        Cash(lhs.currency, lhs.value - rhs.value)
     else
         error("Currency is not compatiable")
     end

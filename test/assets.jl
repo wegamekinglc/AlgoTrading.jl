@@ -7,10 +7,23 @@ include("../src/assets.jl")
     @test currency.symbol == "USD"
 end
 
-# @testset "Asset test" begin
-#     profile = AssetProfile(Stock, "XSHE", 0.0001)
-#     asset = Asset("600000", profile, 0.0015)
-#     @test asset.profile == profile
-#     @test asset.symbol == "600000"
-#     @test asset.slippage == 0.0015
-# end
+@testset "Cash test" begin
+    currency = Currency("USD")
+    cash = Cash(currency, 100.)
+    @test cash.currency == currency
+    @test cash.value == 100.
+end
+
+@testset "Cash arithmic test" begin
+    curr1 = Currency("USD")
+    cash1 = Cash(curr1, 100.)
+    cash2 = Cash(curr1, 200.)
+
+    total_cash = cash1 + cash2
+    @test total_cash.currency == curr1
+    @test total_cash.value == 300.
+
+    total_cash = cash1 - cash2
+    @test total_cash.currency == curr1
+    @test total_cash.value == -100.
+end
