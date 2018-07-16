@@ -1,9 +1,6 @@
 using Base.Test
 using Base.Random.uuid1
 
-include("../src/orders.jl")
-include("../src/transactions.jl")
-
 @testset "Transaction structure test" begin
     tid = uuid1()
     oid = uuid1()

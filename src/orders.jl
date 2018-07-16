@@ -1,5 +1,3 @@
-export MarketOrder, LimitOrder
-
 import Base.==
 import Base.Random.UUID
 

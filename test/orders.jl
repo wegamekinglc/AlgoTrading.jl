@@ -2,8 +2,6 @@ import Base.==
 using Base.Test
 using Base.Random.uuid1
 
-include("../src/orders.jl")
-
 @testset "Market order test" begin
     uid = uuid1()
     order = MarketOrder(uid, "AAPL", 100., 1)

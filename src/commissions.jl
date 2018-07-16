@@ -1,5 +1,3 @@
-include("assets/assets.jl")
-
 abstract type Commission end
 
 struct PerValue <: Commission

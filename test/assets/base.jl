@@ -1,7 +1,5 @@
 using Base.Test
 
-include("../../src/assets/base.jl")
-
 @testset "Currency test" begin
     curr1 = Currency("USD")
     @test curr1.symbol == "USD"

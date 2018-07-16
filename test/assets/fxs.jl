@@ -1,8 +1,6 @@
 using Base.Test
 using Base.DateTime
 
-include("../../src/assets/fxs.jl")
-
 @testset "FX pair test" begin
     fcurr = Currency("USD")
     dcurr = Currency("JPY")

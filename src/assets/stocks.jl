@@ -1,5 +1,3 @@
-include("base.jl")
-
 struct Stock <: AbstractAsset
     symbol::String
     currency::Currency

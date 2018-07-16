@@ -1,7 +1,5 @@
 using Base.Test
 
-include("../src/commissions.jl")
-
 @testset "Per-value commissions test" begin
     pervalue = PerValue(0.005)
     stock = Stock("600000.XSHG", CNY)

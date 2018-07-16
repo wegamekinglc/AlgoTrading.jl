@@ -1,8 +1,6 @@
 using Base.Test
 using Base.DateTime
 
-include("../src/mktdatas.jl")
-
 @testset "Bar data structure test" begin
     symbol = "AAPL"
     bar = Bar(DateTime(2018, 7, 9, 14, 0, 0), symbol, 18., 20., 12.5, 15.0, 400.)

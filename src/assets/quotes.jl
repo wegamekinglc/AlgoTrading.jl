@@ -1,9 +1,6 @@
 import Base.*
 import Base./
 
-include("stocks.jl")
-include("fxs.jl")
-
 struct Quote{T <: AbstractAsset}
     asset::T
     value::Float64

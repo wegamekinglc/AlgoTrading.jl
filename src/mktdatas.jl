@@ -1,5 +1,3 @@
-export Bar
-
 struct Bar
     timestamp::Base.DateTime
     symbol::String

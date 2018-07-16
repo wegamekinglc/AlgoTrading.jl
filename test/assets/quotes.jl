@@ -1,7 +1,5 @@
 using Base.Test
 
-include("../../src/assets/quotes.jl")
-
 @testset "FX quote test" begin
     pair = FXPair(USD, JPY)
     fxquote = FXQuote(pair, 106.)
