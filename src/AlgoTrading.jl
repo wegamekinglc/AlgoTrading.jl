@@ -10,11 +10,13 @@ export Quote, StockQuote, FXQuote, FXForwardQuote
 export valcurrency, maturity, asset, domestic, foreign, invpair, invforward
 export USD, JPY, CNY, EUR
 export USDJPY, USDCNY, JPYUSD, CNYUSD, JPYCNY, CNYJPY
+export sell, buy
 
 include("mktdatas.jl")
 include("orders.jl")
 include("transactions.jl")
 include("assets/assets.jl")
 include("commissions.jl")
+include("tradings.jl")
 
 end
