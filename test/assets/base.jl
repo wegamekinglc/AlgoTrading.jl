@@ -3,8 +3,9 @@ using Base.Test
 include("../../src/assets/base.jl")
 
 @testset "Currency test" begin
-    currency = Currency("USD")
-    @test currency.symbol == "USD"
+    curr1 = Currency("USD")
+    @test curr1.symbol == "USD"
+    @test curr1 == USD
 end
 
 @testset "Cash test" begin
