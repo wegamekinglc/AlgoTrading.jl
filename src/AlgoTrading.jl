@@ -4,7 +4,7 @@ export Bar
 export LimitOrder, MarketOrder
 export Transaction, OrdersStatus
 export ==, +, -, *, /
-export PerTrade, PerValue, calcommission
+export PerTrade, PerValue, PerVolume, commission
 export AbstractAsset, Currency, Cash, Stock, FXPair, FXForward
 export Quote, StockQuote, FXQuote, FXForwardQuote
 export valcurrency, maturity, asset, domestic, foreign, invpair, invforward
