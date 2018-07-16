@@ -13,15 +13,15 @@ end
     fxquote2 = FXQuote(FXPair(CNY, JPY), 18.)
 
     converted = fxquote1 / fxquote2
-    @test asset(converted).symbol == "USD|CNY"
+    @test asset(converted) == USDCNY
     @test converted.value == fxquote1.value / fxquote2.value
 
     fxquote3 = 1. / fxquote2
-    @test asset(fxquote3).symbol == "JPY|CNY"
+    @test asset(fxquote3) == JPYCNY
     @test fxquote3.value == 1. / fxquote2.value
 
     converted = fxquote1 * fxquote3
-    @test asset(converted).symbol == "USD|CNY"
+    @test asset(converted) == USDCNY
     @test converted.value == fxquote1.value * fxquote3.value
 end
 
