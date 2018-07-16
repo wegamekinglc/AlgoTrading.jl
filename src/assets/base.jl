@@ -27,7 +27,18 @@ valcurrency(cash::Cash) = cash.currency
 /(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value / rhs)
 
 # Frequently used currencies and pairs
-const USD = Currency("USD")
-const JPY = Currency("JPY")
-const CNY = Currency("CNY")
-const EUR = Currency("EUR")
+if !isdefined(:USD)
+    const USD = Currency("USD")
+end
+
+if !isdefined(:JPY)
+    const JPY = Currency("JPY")
+end
+
+if !isdefined(:EUR)
+    const EUR = Currency("EUR")
+end
+
+if !isdefined(:CNY)
+    const CNY = Currency("CNY")
+end

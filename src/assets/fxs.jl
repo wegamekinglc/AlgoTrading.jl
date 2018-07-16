@@ -39,7 +39,18 @@ foreign(fxf::FXForward) = fxf.pair.foreign
 valcurrency(fxf::FXForward) = foreign(fxf)
 maturity(fxf::FXForward) = fxf.maturity
 
-const USDJPY = FXPair(USD, JPY)
-const JPYUSD = FXPair(JPY, USD)
-const USDCNY = FXPair(USD, CNY)
-const CNYUSD = FXPair(CNY, USD)
+if !isdefined(:USDJPY)
+    const USDJPY = FXPair(USD, JPY)
+end
+
+if !isdefined(:JPYUSD)
+    const JPYUSD = FXPair(JPY, USD)
+end
+
+if !isdefined(:USDCNY)
+    const USDCNY = FXPair(USD, CNY)
+end
+
+if !isdefined(:CNYUSD)
+    const CNYUSD = FXPair(CNY, USD)
+end
