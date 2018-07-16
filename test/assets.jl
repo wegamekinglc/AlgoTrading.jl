@@ -42,12 +42,12 @@ end
 end
 
 @testset "FX pair test" begin
-    foreign = Currency("USD")
-    domestic = Currency("JPY")
-    pair = FXPair(foreign, domestic)
+    fcurr = Currency("USD")
+    dcurr = Currency("JPY")
+    pair = FXPair(fcurr, dcurr)
     @test pair.symbol == "USD|JPY"
-    @test pair.foreign == foreign
-    @test pair.domestic == domestic
+    @test pair.foreign == fcurr
+    @test pair.domestic == dcurr
 
     pair2 = FXPair("USD|JPY")
     @test pair2.symbol == pair.symbol
@@ -63,9 +63,9 @@ end
 @testset "FX quote test" begin
     pair = FXPair(USD, JPY)
     fxquote = FXQuote(pair, 106.)
-    @test fxquote.pair == pair
+    @test asset(fxquote) == pair
     @test fxquote.value == 106.
-    @test fxpair(fxquote) == pair
+    @test asset(fxquote) == pair
 end
 
 @testset "FX quote arithmetic test" begin
@@ -73,15 +73,15 @@ end
     fxquote2 = FXQuote(FXPair(CNY, JPY), 18.)
 
     converted = fxquote1 / fxquote2
-    @test converted.pair.symbol == "USD|CNY"
+    @test asset(converted).symbol == "USD|CNY"
     @test converted.value == fxquote1.value / fxquote2.value
 
     fxquote3 = 1. / fxquote2
-    @test fxquote3.pair.symbol == "JPY|CNY"
+    @test asset(fxquote3).symbol == "JPY|CNY"
     @test fxquote3.value == 1. / fxquote2.value
 
     converted = fxquote1 * fxquote3
-    @test converted.pair.symbol == "USD|CNY"
+    @test asset(converted).symbol == "USD|CNY"
     @test converted.value == fxquote1.value * fxquote3.value
 end
 

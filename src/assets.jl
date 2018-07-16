@@ -16,7 +16,18 @@ struct Cash
     value::Float64
 end
 
-struct FXPair
+valcurrency(cash::Cash) = cash.currency
+
+abstract type AbstractAsset end
+
+struct Stock <: AbstractAsset
+    symbol::String
+    currency::Currency
+end
+
+valcurrency(stock::Stock) = stock.currency
+
+struct FXPair <: AbstractAsset
     """
     e.g. USD|JPY
     domestic: JPY
@@ -34,14 +45,30 @@ struct FXPair
     end
 end
 
+valcurrency(fxp::FXPair) = fxp.domestic
 invpair(fxp::FXPair) = FXPair(fxp.domestic, fxp.foreign)
 
-struct FXQuote
+struct FXForward <: AbstractAsset
     pair::FXPair
+    maturity::Base.DateTime
+end
+
+invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
+maturity(fxf::FXForward) = fxf.maturity
+
+struct Quote{T <: AbstractAsset}
+    asset::T
     value::Float64
 end
 
-fxpair(fxquote::FXQuote) = fxquote.pair
+const StockQuote = Quote{Stock}
+const FXQuote = Quote{FXPair}
+const FXForwardQuote = Quote{FXForward}
+
+asset(assetquote::Quote{T}) where {T} = assetquote.asset
+valcurrency(assetquote::Quote{T}) where {T} = valcurrency(asset(assetquote))
+domestic(fxquote::FXQuote) = fxquote.asset.domestic
+foreign(fxquote::FXQuote) = fxquote.asset.foreign
 
 +(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value + rhs.value) : error("Currency is not compatiable")
 -(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value - rhs.value) : error("Currency is not compatiable")
@@ -50,56 +77,41 @@ fxpair(fxquote::FXQuote) = fxquote.pair
 /(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value / rhs)
 
 function *(lhs::FXQuote, rhs::FXQuote)
-    if lhs.pair.domestic == rhs.pair.foreign
-        FXQuote(FXPair(lhs.pair.foreign, rhs.pair.domestic), lhs.value * rhs.value)
-    elseif lhs.pair.foreign == rhs.pair.domestic
-        FXQuote(FXPair(rhs.pair.foreign, lhs.pair.domestic), lhs.value * rhs.value)
+    if domestic(lhs) == foreign(rhs)
+        FXQuote(FXPair(foreign(lhs), domestic(rhs)), lhs.value * rhs.value)
+    elseif foreign(lhs) == domestic(rhs)
+        FXQuote(FXPair(domestic(lhs), foreign(rhs)), lhs.value * rhs.value)
     else
         error("Currency is not compatiable")
     end
 end
 
 function /(lhs::FXQuote, rhs::FXQuote)
-    if lhs.pair.domestic == rhs.pair.domestic
-        FXQuote(FXPair(lhs.pair.foreign, rhs.pair.foreign), lhs.value / rhs.value)
-    elseif lhs.pair.foreign == rhs.pair.foreign
-        FXQuote(FXPair(rhs.pair.domestic, lhs.pair.domestic), lhs.value / rhs.value)
+    if domestic(lhs) == domestic(rhs)
+        FXQuote(FXPair(foreign(lhs), foreign(rhs)), lhs.value / rhs.value)
+    elseif foreign(lhs) == foreign(rhs)
+        FXQuote(FXPair(domestic(lhs), domestic(rhs)), lhs.value / rhs.value)
     else
         error("Currency is not compatiable")
     end
 end
 
 /(lhs::FXQuote, rhs::Float64) = FXQuote(lhs.pair, lhs.value / rhs)
-/(lhs::Float64, rhs::FXQuote) = FXQuote(FXPair(rhs.pair.domestic, rhs.pair.foreign), lhs / rhs.value)
+/(lhs::Float64, rhs::FXQuote) = FXQuote(FXPair(domestic(rhs), foreign(rhs)), lhs / rhs.value)
 
-*(lhs::FXQuote, rhs::Cash) = lhs.pair.foreign == rhs.currency ? Cash(lhs.pair.domestic, lhs.value * rhs.value) : error("Currency is not compatiable")
-*(lhs::Cash, rhs::FXQuote) = lhs.currency == rhs.pair.foreign ? Cash(rhs.pair.domestic, lhs.value * rhs.value) : error("Currency is not compatiable")
+*(lhs::FXQuote, rhs::Cash) = foreign(lhs) == rhs.currency ? Cash(domestic(lhs), lhs.value * rhs.value) : error("Currency is not compatiable")
+*(lhs::Cash, rhs::FXQuote) = lhs.currency == foreign(rhs) ? Cash(domestic(rhs), lhs.value * rhs.value) : error("Currency is not compatiable")
 
-struct FXForward
-    pair::FXPair
-    maturity::Base.DateTime
-end
-
-invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
-
-struct FXForwadQuote
-    forward::FXForward
-    value::Float64
-end
-
-maturity(fxfquote::FXForwadQuote) = fxfquote.forward.maturity
-fxpair(fxfquote::FXForwadQuote) = fxfquote.forward.pair
-
-/(lhs::FXForwadQuote, rhs::Float64) = FXQuote(lhs.contract, lhs.value / rhs)
-/(lhs::Float64, rhs::FXForwadQuote) = FXQuote(invforward(rhs.forward), lhs / rhs.value)
+/(lhs::FXForwardQuote, rhs::Float64) = FXForwardQuote(asset(lhs), lhs.value / rhs)
+/(lhs::Float64, rhs::FXForwardQuote) = FXForwardQuote(invforward(asset(rhs)), lhs / rhs.value)
 
 # Frequently used currencies and pairs
-USD = Currency("USD")
-JPY = Currency("JPY")
-CNY = Currency("CNY")
-EUR = Currency("EUR")
+const USD = Currency("USD")
+const JPY = Currency("JPY")
+const CNY = Currency("CNY")
+const EUR = Currency("EUR")
 
-USDJPY = FXPair(USD, JPY)
-JPYUSD = FXPair(JPY, USD)
-USDCNY = FXPair(USD, CNY)
-CNYUSD = FXPair(CNY, USD)
+const USDJPY = FXPair(USD, JPY)
+const JPYUSD = FXPair(JPY, USD)
+const USDCNY = FXPair(USD, CNY)
+const CNYUSD = FXPair(CNY, USD)
