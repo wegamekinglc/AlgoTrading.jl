@@ -1,4 +1,4 @@
-include("assets.jl")
+include("assets/assets.jl")
 
 abstract type Commission end
 

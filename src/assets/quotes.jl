@@ -1,60 +1,10 @@
-import Base.==
 import Base.+
 import Base.-
 import Base.*
 import Base./
 
-struct Currency
-    symbol::String
-    Currency(symbol::AbstractString) = new(uppercase(symbol))
-end
-
-==(lhs::Currency, rhs::Currency) = isequal(lhs.symbol, rhs.symbol)
-
-struct Cash
-    currency::Currency
-    value::Float64
-end
-
-valcurrency(cash::Cash) = cash.currency
-
-abstract type AbstractAsset end
-
-struct Stock <: AbstractAsset
-    symbol::String
-    currency::Currency
-end
-
-valcurrency(stock::Stock) = stock.currency
-
-struct FXPair <: AbstractAsset
-    """
-    e.g. USD|JPY
-    domestic: JPY
-    foreign: USD
-    """
-    symbol::String
-    foreign::Currency
-    domestic::Currency
-    FXPair(foreign::Currency, domestic::Currency) = new(string(foreign.symbol, "|", domestic.symbol), foreign, domestic)
-    function FXPair(symbol::AbstractString)
-        strarray = split(symbol, "|")
-        foreign = Currency(strarray[1])
-        domestic = Currency(strarray[2])
-        new(symbol, foreign, domestic)
-    end
-end
-
-valcurrency(fxp::FXPair) = fxp.domestic
-invpair(fxp::FXPair) = FXPair(fxp.domestic, fxp.foreign)
-
-struct FXForward <: AbstractAsset
-    pair::FXPair
-    maturity::Base.DateTime
-end
-
-invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
-maturity(fxf::FXForward) = fxf.maturity
+include("stocks.jl")
+include("fxs.jl")
 
 struct Quote{T <: AbstractAsset}
     asset::T
@@ -104,14 +54,3 @@ end
 
 /(lhs::FXForwardQuote, rhs::Float64) = FXForwardQuote(asset(lhs), lhs.value / rhs)
 /(lhs::Float64, rhs::FXForwardQuote) = FXForwardQuote(invforward(asset(rhs)), lhs / rhs.value)
-
-# Frequently used currencies and pairs
-const USD = Currency("USD")
-const JPY = Currency("JPY")
-const CNY = Currency("CNY")
-const EUR = Currency("EUR")
-
-const USDJPY = FXPair(USD, JPY)
-const JPYUSD = FXPair(JPY, USD)
-const USDCNY = FXPair(USD, CNY)
-const CNYUSD = FXPair(CNY, USD)

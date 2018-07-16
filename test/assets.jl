@@ -1,6 +1,6 @@
 using Base.Test
 
-include("../src/assets.jl")
+include("../src/assets/assets.jl")
 
 @testset "Currency test" begin
     currency = Currency("USD")
