@@ -1,4 +1,8 @@
 import Base.==
+import Base.+
+import Base.-
+import Base.*
+import Base./
 
 abstract type AbstractAsset end
 
@@ -15,3 +19,9 @@ struct Cash
 end
 
 valcurrency(cash::Cash) = cash.currency
+
++(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value + rhs.value) : error("Currency is not compatiable")
+-(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value - rhs.value) : error("Currency is not compatiable")
+*(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value * rhs)
+*(lhs::Float64, rhs::Cash) = Cash(rhs.currency, lhs * rhs.value)
+/(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value / rhs)

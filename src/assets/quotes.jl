@@ -1,5 +1,3 @@
-import Base.+
-import Base.-
 import Base.*
 import Base./
 
@@ -19,12 +17,6 @@ asset(assetquote::Quote{T}) where {T} = assetquote.asset
 valcurrency(assetquote::Quote{T}) where {T} = valcurrency(asset(assetquote))
 domestic(fxquote::FXQuote) = fxquote.asset.domestic
 foreign(fxquote::FXQuote) = fxquote.asset.foreign
-
-+(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value + rhs.value) : error("Currency is not compatiable")
--(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ? Cash(lhs.currency, lhs.value - rhs.value) : error("Currency is not compatiable")
-*(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value * rhs)
-*(lhs::Float64, rhs::Cash) = Cash(rhs.currency, lhs * rhs.value)
-/(lhs::Cash, rhs::Float64) = Cash(lhs.currency, lhs.value / rhs)
 
 function *(lhs::FXQuote, rhs::FXQuote)
     if domestic(lhs) == foreign(rhs)
