@@ -20,6 +20,7 @@ end
 
 valcurrency(cash::Cash) = cash.currency
 
+-(cash::Cash) = Cash(cash.currency, -cash.value)
 +(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ?
     Cash(lhs.currency, lhs.value + rhs.value) : error("Currency is not compatiable")
 -(lhs::Cash, rhs::Cash) = lhs.currency == rhs.currency ?
