@@ -34,3 +34,8 @@ const USD = Currency("USD")
 const JPY = Currency("JPY")
 const EUR = Currency("EUR")
 const CNY = Currency("CNY")
+
+const BTC = Currency("BTC")
+const ETH = Currency("ETH")
+const EOS = Currency("EOS")
+const USDT = Currency("USDT")
