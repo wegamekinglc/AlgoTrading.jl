@@ -7,7 +7,7 @@ export ==, +, -, *, /
 export PerTrade, PerValue, PerVolume, commission
 export AbstractAsset, Currency, Cash, Stock, FXPair, FXForward
 export Quote, StockQuote, FXQuote, FXForwardQuote
-export valcurrency, maturity, asset, domestic, foreign, invpair, invforward
+export symbol, valcurrency, maturity, asset, domestic, foreign, invpair, invforward
 export USD, JPY, CNY, EUR
 export BTC, ETH, EOS, USDT
 export USDJPY, USDCNY, JPYUSD, CNYUSD, JPYCNY, CNYJPY

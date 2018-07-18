@@ -19,6 +19,7 @@ end
 
 ==(lhs::FXPair, rhs::FXPair) = lhs.foreign == rhs.foreign && lhs.domestic == rhs.domestic
 
+symbol(fxp::FXPair) = string(symbol(foreign), symbol(domestic))
 domestic(fxp::FXPair) = fxp.domestic
 foreign(fxp::FXPair) = fxp.foreign
 valcurrency(fxp::FXPair) = fxp.domestic
@@ -29,6 +30,7 @@ struct FXForward <: AbstractAsset
     maturity::Base.DateTime
 end
 
+symbol(fxf::FXForward) = symbol(fxf.pair)
 invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
 domestic(fxf::FXForward) = fxf.pair.domestic
 foreign(fxf::FXForward) = fxf.pair.foreign

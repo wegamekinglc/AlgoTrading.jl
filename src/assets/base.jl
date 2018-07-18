@@ -18,6 +18,7 @@ struct Cash
     value::Float64
 end
 
+symbol(cash::Cash) = cash.currency.symbol
 valcurrency(cash::Cash) = cash.currency
 
 -(cash::Cash) = Cash(cash.currency, -cash.value)

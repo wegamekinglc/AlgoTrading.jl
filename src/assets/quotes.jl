@@ -10,6 +10,7 @@ const StockQuote = Quote{Stock}
 const FXQuote = Quote{FXPair}
 const FXForwardQuote = Quote{FXForward}
 
+symbol(assetquote::Quote{T}) where {T} = symbol(assetquote.asset)
 asset(assetquote::Quote{T}) where {T} = assetquote.asset
 valcurrency(assetquote::Quote{T}) where {T} = valcurrency(asset(assetquote))
 domestic(fxquote::FXQuote) = fxquote.asset.domestic
