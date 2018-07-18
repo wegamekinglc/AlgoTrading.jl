@@ -1,4 +1,5 @@
 import Base.==
+using Base.Dates
 
 struct FXPair <: AbstractAsset
     """
@@ -19,7 +20,7 @@ end
 
 ==(lhs::FXPair, rhs::FXPair) = lhs.foreign == rhs.foreign && lhs.domestic == rhs.domestic
 
-symbol(fxp::FXPair) = string(symbol(foreign), symbol(domestic))
+symbol(fxp::FXPair) = string(symbol(fxp.foreign), symbol(fxp.domestic))
 domestic(fxp::FXPair) = fxp.domestic
 foreign(fxp::FXPair) = fxp.foreign
 valcurrency(fxp::FXPair) = fxp.domestic
@@ -30,7 +31,9 @@ struct FXForward <: AbstractAsset
     maturity::Base.DateTime
 end
 
-symbol(fxf::FXForward) = symbol(fxf.pair)
+function symbol(fxf::FXForward)
+    string(symbol(fxf.pair), "_", Dates.format(fxf.maturity, "yyyymmddHHMM"))
+end
 invforward(fxf::FXForward) = FXForward(invpair(fxf.pair), fxf.maturity)
 domestic(fxf::FXForward) = fxf.pair.domestic
 foreign(fxf::FXForward) = fxf.pair.foreign

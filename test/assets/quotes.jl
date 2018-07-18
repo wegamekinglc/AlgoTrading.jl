@@ -3,6 +3,8 @@ using Base.Test
 @testset "FX quote test" begin
     pair = FXPair(USD, JPY)
     fxquote = FXQuote(pair, 106.)
+
+    @test symbol(fxquote) == "USDJPY"
     @test asset(fxquote) == pair
     @test fxquote.value == 106.
     @test asset(fxquote) == pair

@@ -11,7 +11,7 @@ using Base.Test
     @test outcash.currency == CNY
     @test outcash.value ≈ -amount * fxquote.value
     @test commcash.currency == CNY
-    @test_approx_eq(commcash.value, comm.value * amount * fxquote.value)
+    @test commcash.value ≈ comm.value * amount * fxquote.value
 
     comm = PerTrade(0.001)
     incash, outcash, commcash = buy(fxquote, amount, comm)
@@ -34,17 +34,17 @@ end
     @test outcash.currency == USD
     @test outcash.value == -amount
     @test incash.currency == CNY
-    @test_approx_eq(incash.value, amount * fxquote.value)
+    @test incash.value ≈ amount * fxquote.value
     @test commcash.currency == CNY
-    @test_approx_eq(commcash.value, comm.value * amount * fxquote.value)
+    @etst commcash.value ≈ comm.value * amount * fxquote.value
 
     comm = PerTrade(0.001)
     incash, outcash, commcash = sell(fxquote, amount, comm)
     @test commcash.currency == CNY
-    @test_approx_eq(commcash.value, comm.value)
+    @test commcash.value ≈ comm.value
 
     comm = PerVolume(0.005)
     incash, outcash, commcash = sell(fxquote, amount, comm)
     @test commcash.currency == USD
-    @test_approx_eq(commcash.value, comm.value * amount)
+    @test commcash.value ≈ comm.value * amount
 end

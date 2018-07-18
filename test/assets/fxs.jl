@@ -5,6 +5,7 @@ using Base.DateTime
     fcurr = Currency("USD")
     dcurr = Currency("JPY")
     pair = FXPair(fcurr, dcurr)
+    @test symbol(pair) == "USDJPY"
     @test pair.foreign == fcurr
     @test pair.domestic == dcurr
 
@@ -22,6 +23,7 @@ end
     ttm = DateTime(2018, 7, 9, 16, 0, 0)
     forward = FXForward(pair, ttm)
 
+    @test symbol(forward) == "USDJPY_201807091600"
     @test forward.pair == pair
     @test maturity(forward) == ttm
 

@@ -33,8 +33,10 @@ end
 
 for bps in [5, 7, 10, 12]
 
-    comm = PerVolume(bps / 10000.)
-    amount = 500. # in USDT
+    tradecounts = 0
+    pervolume = PerVolume(bps / 10000.)
+    pervalue = PerValue(bps / 10000.)
+    amount = 500.
 
     initial = Dict(currencies[1] => Cash(Currency(currencies[1]), 0.),
                    currencies[2] => Cash(Currency(currencies[2]), 0.),
@@ -59,20 +61,20 @@ for bps in [5, 7, 10, 12]
 
         if arbitrage.value > 1.003
             # 正向套利机会
-            incash1, outcash1, comm1 = sell(quote1, amount/ quote1.value, comm)
-            incash2, outcash2, comm2 = sell(quote3, -outcash1.value / quote3.value, comm)
-            #incash3, outcash3, comm3 = buy(quote2, incash1.value / quote2.value, comm)
-            incash3, outcash3, comm3 = buy(quote2, -outcash2.value, comm)
+            tradecounts += 1
+            incash1, outcash1, comm1 = sell(quote3, amount / quote2.value, pervolume)
+            incash2, outcash2, comm2 = sell(quote1, incash1.value, pervalue)
+            incash3, outcash3, comm3 = buy(quote2, -outcash1.value + comm1.value, pervalue)
             incashes = [incash1, incash2, incash3]
             outcashes = [outcash1, outcash2, outcash3]
             comms = [comm1, comm2, comm3]
             updatebalance!(balance, incashes, outcashes, comms)
         elseif arbitrage.value < 0.997
             # 反向套利机会
-            incash1, outcash1, comm1 = sell(quote2, amount / quote2.value, comm)
-            incash2, outcash2, comm2 = buy(quote3, -outcash1.value, comm)
-            #incash3, outcash3, comm3 = buy(quote1, incash1.value / quote1.value, comm)
-            incash3, outcash3, comm3 = buy(quote1, -outcash2.value, comm)
+            tradecounts += 1
+            incash1, outcash1, comm1 = buy(quote3, amount / quote2.value, pervolume)
+            incash2, outcash2, comm2 = buy(quote1, -outcash1.value, pervalue)
+            incash3, outcash3, comm3 = sell(quote2, incash1.value - comm1.value, pervalue)
             incashes = [incash1, incash2, incash3]
             outcashes = [outcash1, outcash2, outcash3]
             comms = [comm1, comm2, comm3]
@@ -80,7 +82,8 @@ for bps in [5, 7, 10, 12]
         end
 
         for k in 1:length(cols)
-            portfolio[i, Symbol(cash_names[k])] = getbalance(balance, string(cash_names[k])).value
+            portfolio[i, Symbol(cash_names[k])] = getbalance(balance,
+                                                             string(cash_names[k])).value
         end
 
     end

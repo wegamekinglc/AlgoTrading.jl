@@ -2,13 +2,14 @@ using Base.Test
 
 @testset "Currency test" begin
     curr1 = Currency("USD")
-    @test curr1.symbol == "USD"
+    @test symbol(curr1) == "USD"
     @test curr1 == USD
 end
 
 @testset "Cash test" begin
     currency = Currency("USD")
     cash = Cash(currency, 100.)
+    @test symbol(cash) == "USD"
     @test cash.currency == currency
     @test cash.value == 100.
 end

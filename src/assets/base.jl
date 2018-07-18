@@ -11,6 +11,8 @@ struct Currency
     Currency(symbol::AbstractString) = new(uppercase(symbol))
 end
 
+symbol(curr::Currency) = curr.symbol
+
 ==(lhs::Currency, rhs::Currency) = isequal(lhs.symbol, rhs.symbol)
 
 struct Cash
