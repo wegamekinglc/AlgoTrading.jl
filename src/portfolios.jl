@@ -1,11 +1,14 @@
-struct Balance
+type Balance
     cashes::Dict{String, Cash}
-    function Balance(balance=nothing)
+    function Balance(balance::Dict{String, Cash}=nothing)
         if balance == nothing
             new(Dict{String, Cash}())
         else
             new(balance)
         end
+    end
+    function Balance(assets::Array{Currency, 1})
+        new(Dict(c.symbol => Cash(c, 0.) for c in assets))
     end
 end
 
