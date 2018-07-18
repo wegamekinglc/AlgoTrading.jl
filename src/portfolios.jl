@@ -1,6 +1,6 @@
 type Balance
     cashes::Dict{String, Cash}
-    function Balance(balance::Dict{String, Cash}=nothing)
+    function Balance(balance::Dict{String, Cash})
         if balance == nothing
             new(Dict{String, Cash}())
         else

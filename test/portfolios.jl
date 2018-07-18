@@ -1,7 +1,7 @@
 using Base.Test
 
 @testset "Balance test" begin
-    balance = Balance()
+    balance = Balance(Dict{String, Cash}())
 
     update!(balance, Cash(USD, 0.))
     update!(balance, Cash(CNY, 0.))
