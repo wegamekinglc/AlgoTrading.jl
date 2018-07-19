@@ -1,9 +1,11 @@
 using Base.Test
 
 @testset "FX quote test" begin
+    timestamp = now()
     pair = FXPair(USD, JPY)
-    fxquote = FXQuote(pair, 106.)
+    fxquote = FXQuote(pair, 106., timestamp)
 
+    @test tradetime(fxquote) == timestamp
     @test symbol(fxquote) == "USDJPY"
     @test asset(fxquote) == pair
     @test fxquote.value == 106.
@@ -11,8 +13,9 @@ using Base.Test
 end
 
 @testset "FX quote arithmetic test" begin
-    fxquote1 = FXQuote(USDJPY, 106.)
-    fxquote2 = FXQuote(FXPair(CNY, JPY), 18.)
+    timestamp = now()
+    fxquote1 = FXQuote(USDJPY, 106., timestamp)
+    fxquote2 = FXQuote(FXPair(CNY, JPY), 18., timestamp)
 
     converted = fxquote1 / fxquote2
     @test asset(converted) == USDCNY
@@ -28,7 +31,8 @@ end
 end
 
 @testset "Cash and fx quote arithmetic test" begin
-    fxquote = FXQuote(USDJPY, 106.)
+    timestamp = now()
+    fxquote = FXQuote(USDJPY, 106., timestamp)
     cash = Cash(USD, 100.)
 
     converted = cash * fxquote
@@ -39,6 +43,6 @@ end
     @test converted.currency == JPY
     @test converted.value == fxquote.value * cash.value
 
-    fxquote = FXQuote(JPYUSD, 0.01)
+    fxquote = FXQuote(JPYUSD, 0.01, timestamp)
     @test_throws ErrorException fxquote * cash
 end

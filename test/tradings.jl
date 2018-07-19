@@ -1,7 +1,8 @@
 using Base.Test
 
 @testset "Trading with buy test" begin
-    fxquote = FXQuote(USDCNY, 6.70)
+    timestamp = now()
+    fxquote = FXQuote(USDCNY, 6.70, timestamp)
     comm = PerValue(0.005)
     amount = 2.25
 
@@ -26,7 +27,8 @@ end
 
 
 @testset "Trading with sell test" begin
-    fxquote = FXQuote(USDCNY, 6.70)
+    timestamp = now()
+    fxquote = FXQuote(USDCNY, 6.70, timestamp)
     comm = PerValue(0.005)
     amount = 2.25
 

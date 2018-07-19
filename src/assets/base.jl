@@ -6,7 +6,7 @@ import Base./
 
 abstract type AbstractAsset end
 
-struct Currency
+struct Currency <: AbstractAsset
     symbol::String
     Currency(symbol::AbstractString) = new(uppercase(symbol))
 end
