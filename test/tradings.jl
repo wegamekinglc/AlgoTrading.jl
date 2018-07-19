@@ -36,7 +36,11 @@ end
     @test incash.currency == CNY
     @test incash.value ≈ amount * fxquote.value
     @test commcash.currency == CNY
+<<<<<<< HEAD
     @etst commcash.value ≈ comm.value * amount * fxquote.value
+=======
+    @test commcash.value ≈ comm.value * amount * fxquote.value
+>>>>>>> db6b2f29643180efbd699932f42692347a957901
 
     comm = PerTrade(0.001)
     incash, outcash, commcash = sell(fxquote, amount, comm)
