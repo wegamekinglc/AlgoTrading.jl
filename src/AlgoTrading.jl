@@ -13,7 +13,7 @@ export BTC, ETH, EOS, USDT
 export USDJPY, USDCNY, JPYUSD, CNYUSD, JPYCNY, CNYJPY
 export BTCUSD, ETHUSD, EOSUSD, BTCUSDT, ETHUSDT, EOSUSDT, EOSBTC, EOSETH
 export sell, buy
-export Balance, update!, getbalance
+export Balance, update, update!, getbalance
 
 include("mktdatas.jl")
 include("orders.jl")
