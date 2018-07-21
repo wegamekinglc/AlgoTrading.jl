@@ -20,7 +20,7 @@ include("orders.jl")
 include("transactions.jl")
 include("assets/assets.jl")
 include("commissions.jl")
-include("tradings.jl")
 include("portfolios.jl")
+include("tradings.jl")
 
 end
