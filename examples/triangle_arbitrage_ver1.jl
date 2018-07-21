@@ -1,81 +1,67 @@
 include("../src/AlgoTrading.jl")
-include("utilities.jl")
 
-using CSV
 using AlgoTrading
+using CSV
+using Iterators
 using DataFrames
 using Base.DateTime
 
-close_table = CSV.read("d:/binance_eos_btc_pivot.csv")
+close_table = CSV.read("d:/binance_eos_eth_pivot.csv")
 close_table[:trade_time] =
     map((x::String) -> DateTime(x, "yyyy-mm-dd HH:MM:SS"), close_table[:trade_time])
 
-currencies = ["BTC", "EOS", "USDT"]
+currencies = ["ETH", "EOS", "USDT"]
+cashsymbols = [Symbol(c) for c in currencies]
 
 cols = [string(currencies[1], "|", currencies[3]),
         string(currencies[2], "|", currencies[3]),
         string(currencies[2], "|", currencies[1])]
 
+fxpairs = [FXPair(c) for c in cols]
+quotesymbols = [Symbol(c) for c in cols]
+
 n, m = size(close_table)
+amount = 500.
 
-for bps in [5, 7, 10, 12]
-
-    tradecounts = 0
+@time for bps in [5, 7, 10, 12]
     pervolume = PerVolume(bps / 10000.)
     pervalue = PerValue(bps / 10000.)
-    amount = 500.
 
     initial = Dict(currencies[1] => Cash(Currency(currencies[1]), 0.),
                    currencies[2] => Cash(Currency(currencies[2]), 0.),
                    currencies[3] => Cash(Currency(currencies[3]), amount))
 
     balance = Balance(initial)
-    portfolio = DataFrame(:trade_time => close_table[:trade_time],
-                          Symbol(currencies[1]) => zeros(n),
-                          Symbol(currencies[2]) => zeros(n),
-                          Symbol(currencies[3]) => zeros(n))
-    cash_names = names(portfolio)[2:end]
+    portfolio = DataFrame(:trade_time => close_table[:, 1],
+                          cashsymbols[1] => zeros(n),
+                          cashsymbols[2] => zeros(n),
+                          cashsymbols[3] => zeros(n),
+                          :turn_over => zeros(n),
+                          quotesymbols[1] => close_table[quotesymbols[1]],
+                          quotesymbols[2] => close_table[quotesymbols[2]],
+                          quotesymbols[3] => close_table[quotesymbols[3]])
 
-    @time @parallel for i in 1:n
-        row = close_table[i, :]
-        tradetime = row[:trade_time][1]
-        quote1 = FXQuote(FXPair(cols[1]), row[Symbol(cols[1])][1], tradetime)
-        quote2 = FXQuote(FXPair(cols[2]), row[Symbol(cols[2])][1], tradetime)
-        quote3 = FXQuote(FXPair(cols[3]), row[Symbol(cols[3])][1], tradetime)
+    for i in 1:n
+        tradetime = close_table[i, :trade_time]
+        quote1 = FXQuote(fxpairs[1], close_table[i, quotesymbols[1]], tradetime)
+        quote2 = FXQuote(fxpairs[2], close_table[i, quotesymbols[2]], tradetime)
+        quote3 = FXQuote(fxpairs[3], close_table[i, quotesymbols[3]], tradetime)
 
-        arbitrage = quote1 / quote2 * quote3
+        arbitrage = (quote1 / quote2 * quote3).value - 1.
+        direction = sign(arbitrage)
 
-        if arbitrage.value > 1.003
+        if abs(arbitrage) > .003
             # 正向套利机会
-            tradecounts += 1
-            incash1, outcash1, comm1 = sell(quote3, amount / quote2.value, pervolume)
-            incash2, outcash2, comm2 = sell(quote1, incash1.value, pervalue)
-            incash3, outcash3, comm3 = buy(quote2, -outcash1.value + comm1.value, pervalue)
-            incashes = [incash1, incash2, incash3]
-            outcashes = [outcash1, outcash2, outcash3]
-            comms = [comm1, comm2, comm3]
-            updatebalance!(balance, incashes, outcashes, comms)
-        elseif arbitrage.value < 0.997
-            # 反向套利机会
-            tradecounts += 1
-            incash1, outcash1, comm1 = buy(quote3, amount / quote2.value, pervolume)
-            incash2, outcash2, comm2 = buy(quote1, -outcash1.value, pervalue)
-            incash3, outcash3, comm3 = sell(quote2, incash1.value - comm1.value, pervalue)
-            incashes = [incash1, incash2, incash3]
-            outcashes = [outcash1, outcash2, outcash3]
-            comms = [comm1, comm2, comm3]
-            updatebalance!(balance, incashes, outcashes, comms)
+            fcurr1, dcurr1, comm1 = trade(quote3, -direction * amount / quote2.value, pervolume)
+            fcurr2, dcurr2, comm2 = trade(quote1, -dcurr1.value, pervalue)
+            fcurr3, dcurr3, comm3 = trade(quote2, -fcurr1.value - comm1.value, pervalue)
+            update!(balance, [fcurr1, dcurr1, comm1, fcurr2, dcurr2, comm2, fcurr3, dcurr3, comm3])
+            portfolio[i, :turn_over] = 1.
         end
 
-        for k in 1:length(cols)
-            portfolio[i, Symbol(cash_names[k])] = getbalance(balance,
-                                                             string(cash_names[k])).value
+        for s in cashsymbols
+            portfolio[i, s] = getbalance(balance, string(s)).value
         end
     end
-
-    for name in cols[1:end-1]
-        portfolio[Symbol(name)] = close_table[Symbol(name)]
-    end
-    println(tradecounts)
     CSV.write("d:/arb_$(bps)bps.csv", portfolio, dateformat="yyyy-mm-dd HH:MM:SS")
 end
