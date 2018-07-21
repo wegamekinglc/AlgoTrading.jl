@@ -24,7 +24,7 @@ function *(lhs::FXQuote, rhs::FXQuote)
         if domestic(lhs) == foreign(rhs)
             FXQuote(FXPair(foreign(lhs), domestic(rhs)), lhs.value * rhs.value, tradetime(lhs))
         elseif foreign(lhs) == domestic(rhs)
-            FXQuote(FXPair(domestic(lhs), foreign(rhs)), lhs.value * rhs.value, tradetime(lhs))
+            FXQuote(FXPair(foreign(rhs), domestic(lhs)), lhs.value * rhs.value, tradetime(lhs))
         else
             error("Currency is not compatable")
         end
