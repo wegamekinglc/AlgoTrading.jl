@@ -13,13 +13,13 @@ struct PerVolume <:Commission
 end
 
 commission(assetquote::Quote{T}, amount::Float64, comm::PerValue) where {T} =
-    Cash(valcurrency(assetquote), amount * assetquote.value * comm.value)
+    Cash(valcurrency(assetquote), -abs(amount) * assetquote.value * comm.value)
 
 commission(assetquote::Quote{T}, amount::Float64, comm::PerTrade) where {T} =
-    Cash(valcurrency(assetquote), comm.value)
+    Cash(valcurrency(assetquote), -comm.value)
 
 commission(assetquote::FXQuote, amount::Float64, comm::PerVolume) =
-    Cash(foreign(assetquote), amount * comm.value)
+    Cash(foreign(assetquote), -abs(amount) * comm.value)
 
 commission(assetquote::FXForwardQuote, amount::Float64, comm::PerVolume) =
-    Cash(foreign(assetquote), amount * comm.value)
+    Cash(foreign(assetquote), -abs(amount) * comm.value)

@@ -10,14 +10,14 @@ using Base.Test
     comm = commission(stockquote, amount, pervalue)
     @test isa(comm, Cash)
     @test valcurrency(comm) == CNY
-    @test comm.value == amount * stockquote.value * pervalue.value
+    @test comm.value == -amount * stockquote.value * pervalue.value
 
     fxpair = FXPair(USD, CNY)
     fxquote = FXQuote(fxpair, 6.6758, timestamp)
     comm = commission(fxquote, amount, pervalue)
     @test isa(comm, Cash)
     @test valcurrency(comm) == CNY
-    @test comm.value == amount * fxquote.value * pervalue.value
+    @test comm.value == -amount * fxquote.value * pervalue.value
 end
 
 @testset "Per-trade commission test" begin
@@ -30,14 +30,14 @@ end
     comm = commission(stockquote, amount, pertrade)
     @test isa(comm, Cash)
     @test valcurrency(comm) == CNY
-    @test comm.value == pertrade.value
+    @test comm.value == -pertrade.value
 
     fxpair = FXPair(USD, CNY)
     fxquote = FXQuote(fxpair, 6.6758, timestamp)
     comm = commission(fxquote, amount, pertrade)
     @test isa(comm, Cash)
     @test valcurrency(comm) == CNY
-    @test comm.value == pertrade.value
+    @test comm.value == -pertrade.value
 end
 
 @testset "Per-volume commission test" begin
@@ -50,5 +50,5 @@ end
     comm = commission(fxquote, amount, pervolume)
     @test isa(comm, Cash)
     @test valcurrency(comm) == USD
-    @test comm.value == amount * pervolume.value
+    @test comm.value == -amount * pervolume.value
 end
