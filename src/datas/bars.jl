@@ -2,7 +2,7 @@ using HTTP
 using DataFrames
 using Base.Dates
 
-function getbar(pair="ltc_btc", mintype="1min", barsize=10)
+function getspotbar(pair="ltc_btc", mintype="1min", barsize=10)
     resp = HTTP.get("https://www.okex.com/api/v1/kline.do?symbol=$pair&type=$mintype&size=$barsize");
     text = String(resp.body)
 
