@@ -1,39 +1,20 @@
+module Okex
+
 using HTTP
 using DataFrames
 using Base.Dates
 
 
-function getfuturebar(pair, contract, since; mintype="1min")
-    pair_formated = lowercase(replace(pair, "|", "_"))
-    since_time::Int64 = 0
-    if isa(since, DateTime)
-        since_time = (datetime2unix(since) - 8 * 3600) * 1000
-    else
-        since_time = (datetime2unix(DateTime(since)) - 8 * 3600) * 1000
+function getmaturity(contract)
+    current = now()
+    if contract == "this_week"
+        ret = thisweekcontract(current)
+    elseif contract == "next_week"
+        ret = nextweekcontract(current)
+    elseif contract == "quarter"
+        ret = thisquartercontract(current)
     end
-    resp = HTTP.get("https://www.okex.com/api/v1/future_kline.do?symbol=$pair_formated&contract_type=$contract&type=$mintype&since=$since_time");
-    text = String(resp.body)
-
-    mat = maketable(text, 6)
-    df = todf(mat)
-    df[:pair] = uppercase(pair)
-    df
-end
-
-function getspotbar(pair, since; mintype="1min")
-    pair_formated = lowercase(replace(pair, "|", "_"))
-    since_time::Int64 = 0
-    if isa(since, DateTime)
-        since_time = (datetime2unix(since) - 8 * 3600) * 1000
-    else
-        since_time = (datetime2unix(DateTime(since)) - 8 * 3600) * 1000
-    end
-    resp = HTTP.get("https://www.okex.com/api/v1/kline.do?symbol=$pair_formated&type=$mintype&since=$since_time");
-    text = String(resp.body)
-    mat = maketable(text, 6)
-    df = todf(mat)
-    df[:pair] = uppercase(pair)
-    df
+    ret
 end
 
 
@@ -65,3 +46,76 @@ function maketable(text::String, fields::Int)
     mat
 end
 
+function thisweekcontract(current::DateTime)
+    if Dates.isfriday(current)
+        ret = DateTime(Date(current)) + Dates.Hour(16)
+    else
+        ret = DateTime(Date(current)) + Dates.Hour(16)
+        ret = Dates.tonext(ret, Dates.Friday)
+    end
+    ret
+end
+
+function nextweekcontract(current::DateTime)
+    thisweek = thisweekcontract(current)
+    ret = Dates.tonext(thisweek, Dates.Friday)
+    ret
+end
+
+function lastfridayofquater(current::DateTime)
+    lastday = Dates.lastdayofquarter(current)
+    if Dates.isfriday(lastday)
+        lastfriday = lastday
+    else
+        lastfriday = toprev(lastday, Dates.Friday)
+    end
+    lastfriday + Dates.Hour(16)
+end
+
+function thisquartercontract(current::DateTime)
+    lastfriday = lastfridayofquater(current)
+    if current > lastfriday
+        ret = lastfridayofquater(Dates.tonext(lastfriday, Dates.Friday))
+    else
+        ret = lastfriday
+    end
+    ret
+end
+
+function getfuturebar(pair, contract, since; mintype="1min")
+    pair_formated = lowercase(replace(pair, "|", "_"))
+    since_time::Int64 = 0
+    if isa(since, DateTime)
+        since_time = (datetime2unix(since) - 8 * 3600) * 1000
+    else
+        since_time = (datetime2unix(DateTime(since)) - 8 * 3600) * 1000
+    end
+    resp = HTTP.get("https://www.okex.com/api/v1/future_kline.do?symbol=$pair_formated&contract_type=$contract&type=$mintype&since=$since_time");
+    text = String(resp.body)
+
+    mat = maketable(text, 6)
+    df = todf(mat)
+    df[:pair] = uppercase(pair)
+    df[:maturity] = getmaturity(contract)
+    df
+end
+
+
+function getspotbar(pair, since; mintype="1min")
+    pair_formated = lowercase(replace(pair, "|", "_"))
+    since_time::Int64 = 0
+    if isa(since, DateTime)
+        since_time = (datetime2unix(since) - 8 * 3600) * 1000
+    else
+        since_time = (datetime2unix(DateTime(since)) - 8 * 3600) * 1000
+    end
+    resp = HTTP.get("https://www.okex.com/api/v1/kline.do?symbol=$pair_formated&type=$mintype&since=$since_time");
+    text = String(resp.body)
+    mat = maketable(text, 6)
+    df = todf(mat)
+    df[:pair] = uppercase(pair)
+    df
+end
+
+
+end
