@@ -2,14 +2,17 @@ using HTTP
 using DataFrames
 using Base.Dates
 
-function getspotbar(pair="ltc_btc", mintype="1min", barsize=10)
-    resp = HTTP.get("https://www.okex.com/api/v1/kline.do?symbol=$pair&type=$mintype&size=$barsize");
+
+function getspotbar(pair, mintype="1min", barsize=10)
+    pair_formated = lowercase(replace(pair, "|", "_"))
+    resp = HTTP.get("https://www.okex.com/api/v1/kline.do?symbol=$pair_formated&type=$mintype&size=$barsize");
     text = String(resp.body)
 
     mat = maketable(text, 6)
     df = DataFrame(mat, [:trade_time, :open, :high, :low, :close, :volume])
     df[:trade_time] =
         map((x) -> unix2datetime(x / 1000.), df[:trade_time])
+    df[:pair] = uppercase(pair)
     df
 end
 
