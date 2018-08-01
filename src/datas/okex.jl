@@ -4,6 +4,8 @@ using HTTP
 using DataFrames
 using Base.Dates
 
+export getspotbar, getfuturebar
+
 
 function getmaturity(contract)
     current = now()
@@ -46,6 +48,7 @@ function maketable(text::String, fields::Int)
     mat
 end
 
+
 function thisweekcontract(current::DateTime)
     if Dates.isfriday(current)
         ret = DateTime(Date(current)) + Dates.Hour(16)
@@ -56,11 +59,13 @@ function thisweekcontract(current::DateTime)
     ret
 end
 
+
 function nextweekcontract(current::DateTime)
     thisweek = thisweekcontract(current)
     ret = Dates.tonext(thisweek, Dates.Friday)
     ret
 end
+
 
 function lastfridayofquater(current::DateTime)
     lastday = Dates.lastdayofquarter(current)
@@ -72,6 +77,7 @@ function lastfridayofquater(current::DateTime)
     lastfriday + Dates.Hour(16)
 end
 
+
 function thisquartercontract(current::DateTime)
     lastfriday = lastfridayofquater(current)
     if current > lastfriday
@@ -81,6 +87,7 @@ function thisquartercontract(current::DateTime)
     end
     ret
 end
+
 
 function getfuturebar(pair, contract, since; mintype="1min")
     pair_formated = lowercase(replace(pair, "|", "_"))
