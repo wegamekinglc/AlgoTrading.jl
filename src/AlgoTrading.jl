@@ -22,5 +22,6 @@ include("assets/assets.jl")
 include("commissions.jl")
 include("portfolios.jl")
 include("tradings.jl")
+include("datas/okex.jl")
 
 end

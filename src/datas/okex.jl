@@ -1,6 +1,7 @@
 module Okex
 
 using HTTP
+using MD5
 using DataFrames
 using Base.Dates
 
@@ -124,5 +125,31 @@ function getspotbar(pair, since; mintype="1min")
     df
 end
 
+
+function getaccount(api_key::AbstractString, secret_key::AbstractString)
+    query_sign = bytes2hex(md5("$api_key&secret_key=$secret_key"))
+    query = "https://www.okex.com/api/v1/userinfo.do?sign=$query_sign"
+    resp = HTTP.post(query)
+    res = String(resp.body)
+    if length(res) == 0
+        Dict{String, Any}()
+    else
+        JSON.parse(res)
+    end
+end
+
+
+function getorderinfo(api_key::AbstractString, secret_key::AbstractString, pair::AbstractString; order_id::Int64=-1)
+    pair_formated = lowercase(replace(pair, "|", "_"))
+    query_sign = bytes2hex(md5("$api_key&symbol=$pair_formated&order_id=$order_id&secret_key=$secret_key"))
+    query = "https://www.okex.com/api/v1/order_info.do?sign=$query_sign"
+    resp = HTTP.post(query)
+    res = String(resp.body)
+    if length(res) == 0
+        Dict{String, Any}()
+    else
+        JSON.parse(res)
+    end
+end
 
 end
