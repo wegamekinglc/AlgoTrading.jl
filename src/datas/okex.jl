@@ -1,5 +1,6 @@
 module Okex
 
+using JSON
 using HTTP
 using MD5
 using DataFrames
