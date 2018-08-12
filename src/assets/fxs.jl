@@ -1,5 +1,5 @@
 import Base.==
-using Base.Dates
+using Dates
 
 struct FXPair <: AbstractAsset
     """
@@ -28,7 +28,7 @@ invpair(fxp::FXPair) = FXPair(fxp.domestic, fxp.foreign)
 
 struct FXForward <: AbstractAsset
     pair::FXPair
-    maturity::Base.DateTime
+    maturity::DateTime
 end
 
 function symbol(fxf::FXForward)

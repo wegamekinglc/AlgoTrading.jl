@@ -3,7 +3,7 @@ module Okex
 using HTTP
 using MD5
 using DataFrames
-using Base.Dates
+using Dates
 
 export getspotbar, getfuturebar
 

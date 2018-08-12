@@ -1,5 +1,5 @@
 import Base.==
-import Base.Random.UUID
+import UUIDs: UUID
 
 abstract type Order end
 

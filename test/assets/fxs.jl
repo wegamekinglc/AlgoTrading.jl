@@ -1,5 +1,5 @@
-using Base.Test
-using Base.DateTime
+using Test
+using Dates
 
 @testset "FX pair test" begin
     fcurr = Currency("USD")

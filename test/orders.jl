@@ -1,6 +1,6 @@
 import Base.==
-using Base.Test
-using Base.Random.uuid1
+using Test
+using UUIDs: uuid1
 
 @testset "Market order test" begin
     uid = uuid1()

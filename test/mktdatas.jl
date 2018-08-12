@@ -1,5 +1,5 @@
-using Base.Test
-using Base.DateTime
+using Test
+using Dates
 
 @testset "Bar data structure test" begin
     symbol = "AAPL"

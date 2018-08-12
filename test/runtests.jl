@@ -1,6 +1,6 @@
 include("../src/AlgoTrading.jl")
 
-using AlgoTrading
+using .AlgoTrading
 
 include("mktdatas.jl")
 include("orders.jl")

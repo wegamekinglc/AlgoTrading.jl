@@ -1,5 +1,5 @@
-using Base.Test
-using Base.Random.uuid1
+using Test
+using UUIDs: uuid1
 
 @testset "Transaction structure test" begin
     tid = uuid1()

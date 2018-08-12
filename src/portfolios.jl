@@ -1,4 +1,4 @@
-type Balance
+mutable struct Balance
     cashes::Dict{String, Cash}
     function Balance(balance::Dict{String, Cash})
         if balance == nothing

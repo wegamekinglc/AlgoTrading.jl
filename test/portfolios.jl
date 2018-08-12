@@ -1,4 +1,4 @@
-using Base.Test
+using Test
 
 @testset "Balance update test1" begin
     balance = Balance(Dict{String, Cash}())

@@ -1,4 +1,4 @@
-import Base.Random.UUID
+import UUIDs: UUID
 
 struct Transaction
     id::UUID

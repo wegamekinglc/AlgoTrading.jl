@@ -1,5 +1,5 @@
-using Base.Test
-using Base.Dates
+using Test
+using Dates
 
 include("../../src/datas/okex.jl")
 

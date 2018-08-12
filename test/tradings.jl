@@ -1,4 +1,4 @@
-using Base.Test
+using Test
 
 @testset "Trading with positive amount test" begin
     timestamp = now()

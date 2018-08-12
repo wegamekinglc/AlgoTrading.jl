@@ -1,11 +1,11 @@
 import Base.*
 import Base./
-using Base.Dates
+using Dates
 
 struct Quote{T <: AbstractAsset}
     asset::T
     value::Float64
-    timestamp::Base.DateTime
+    timestamp::DateTime
 end
 
 const StockQuote = Quote{Stock}

@@ -1,5 +1,7 @@
+import Dates: DateTime
+
 struct Bar
-    timestamp::Base.DateTime
+    timestamp::DateTime
     symbol::String
     open::Float64
     high::Float64
